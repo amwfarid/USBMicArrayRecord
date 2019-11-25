@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ffmpeg -b 800k -i $1 $1.flv

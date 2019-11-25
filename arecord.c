@@ -5,6 +5,7 @@
 */
 #define _GNU_SOURCE
 #include <stdio.h>
+#include<signal.h> 
 #include <malloc.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -178,6 +179,9 @@ struct fmt_capture {
 } while (0)
 #endif
 
+static struct timeval start_ts;
+static struct timeval end_ts;
+
 static void version(void)
 {
 }
@@ -217,10 +221,27 @@ enum {
 	OPT_TEST_POSITION
 };
 
-int main()
+static char* mic_name;
+
+void handle_sigint(int sig) 
+{ 
+    printf("Stopping\n");
+    gettimeofday(&end_ts,NULL);
+    FILE * fp = fopen ("finish_times.csv","a");
+    fprintf(fp,"%s,%li%li,%li%li\n",mic_name,start_ts.tv_sec,start_ts.tv_usec,end_ts.tv_sec,end_ts.tv_usec);
+    fclose(fp);
+    capture_stop = 1;
+    //exit(0);
+} 
+
+int main(int argc, char **argv)
 {
-    run("b.wav");
-    return 0;
+
+	signal(SIGINT, handle_sigint);
+    printf("Starting recording for (%s , %s). Hit CTRL+C to end.\n",argv[1],argv[2]);
+    mic_name = argv[1];
+    run(argv[1],argv[2]);
+    
 }
 
 void stop()
@@ -228,10 +249,9 @@ void stop()
     capture_stop = 1;
 }
 
-int run(char *filename)
+int run(char *filename,char *pcm_name)
 {
     capture_stop = 0;
-	char *pcm_name = "default";
 	int tmp, err;
 	snd_pcm_info_t *info;
 
@@ -1014,6 +1034,8 @@ static void capture(char *orig_name)
 		/* setup sample header */
 		if (fmt_rec_table[file_type].start)
 			fmt_rec_table[file_type].start(fd, rest);
+
+		gettimeofday(&start_ts,NULL);
 
 		/* capture */
 		fdcount = 0;
