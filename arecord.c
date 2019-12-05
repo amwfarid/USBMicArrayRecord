@@ -277,7 +277,7 @@ int run(char *filename,char *pcm_name)
     // rhwparams.format = SND_PCM_FORMAT_S16_BE;
     rhwparams.format = file_type == FORMAT_AU ? SND_PCM_FORMAT_S16_BE : SND_PCM_FORMAT_S16_LE;
     rhwparams.rate = 44100;
-    rhwparams.channels = 2;
+    rhwparams.channels = 1;
 
 	err = snd_pcm_open(&handle, pcm_name, stream, open_mode);
 	if (err < 0) {
@@ -1034,6 +1034,13 @@ static void capture(char *orig_name)
 		/* setup sample header */
 		if (fmt_rec_table[file_type].start)
 			fmt_rec_table[file_type].start(fd, rest);
+        char lock_name[11];
+        strcat(strcpy(lock_name,orig_name),"lck");
+		FILE * fp = fopen (lock_name,"w");
+    	fprintf(fp,"KEY");
+    	fclose(fp);
+		while(!(exists("mic1.wavlck") && exists("mic2.wavlck") && exists("mic3.wavlck") && exists("mic4.wavlck")
+		 && exists("mic5.wavlck") && exists("mic6.wavlck") && exists("mic7.wavlck") && exists("mic8.wavlck")))
 
 		gettimeofday(&start_ts,NULL);
 
@@ -1066,4 +1073,15 @@ static void capture(char *orig_name)
 	} while ( ((file_type == FORMAT_RAW && !timelimit) || count > 0) &&
         capture_stop == 0);
     printf("arecord: Stopping capturing audio.\n");
+}
+
+int exists(const char *fname)
+{
+    FILE *file;
+    if ((file = fopen(fname, "r")))
+    {
+        fclose(file);
+        return 1;
+    }
+    return 0;
 }
