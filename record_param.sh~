@@ -7,4 +7,4 @@ IFS='_' read -r -a array <<< "$1"
 device=${array[1]}
 id=${array[0]}
 
-./multimic $id $device
+echo $id $device
