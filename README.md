@@ -35,7 +35,7 @@ You may need to install the following dependency to compile:
 
 ## Alternatives to this implementation
 
-If you are on a MAC, you may want to consider merging the separate USB interfaces into one as done [here](https://support.apple.com/en-us/HT202000).
+If you are on a Mac, you may want to consider merging the separate USB interfaces into one as done [here](https://support.apple.com/en-us/HT202000).
 
 For linux, in prinicple it is the same for Mac but is done using the [JACK Audio Connection Kit](https://jackaudio.org/). It might be tricky to get it up and running.
 

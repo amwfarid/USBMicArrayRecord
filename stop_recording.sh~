@@ -1,6 +1,0 @@
-killall -2 multimic
-rm *lck
-time=$(date +%s)
-mkdir recordings_$time
-mv *.wav recordings_$time
-
