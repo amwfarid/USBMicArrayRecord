@@ -28,7 +28,7 @@ The present operational procedures is as follows:
 To customize the `.lck` mechanism according to your needs, refer to line 1042 in `arecord.c`
 
 To compile the code, simply do:
-`gcc -o arecord arecord.c -lasound`
+`gcc -o multimic arecord.c -lasound`
 
 You may need to install the following dependency to compile:
 `sudo apt-get install libasound2-dev`
